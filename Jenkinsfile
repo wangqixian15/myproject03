@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Define the default URL where the server will be accessible during the tests
-        SERVER_URL = 'http://localhost:3000'
+        SERVER_URL = 'https://github.com/wangqixian15/myproject03.git'
     }
 
     stages {
