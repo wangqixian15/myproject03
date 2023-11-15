@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <style>
+        #error-message {
+            color: red;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form id="login-form">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Login</button>
+        <span id="error-message"></span> <!-- Error message will be displayed here -->
+    </form>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('login-form');
+            var errorMessage = document.getElementById('error-message');
+
+            form.onsubmit = function(event) {
+                event.preventDefault();
+                errorMessage.textContent = ''; // Clear any existing error messages
+                var formData = new FormData(this);
+                var formBody = [];
+                
+                for (var [key, value] of formData) {
+                    var encodedKey = encodeURIComponent(key);
+                    var encodedValue = encodeURIComponent(value);
+                    formBody.push(encodedKey + "=" + encodedValue);
+                }
+                
+                formBody = formBody.join("&");
+
+                fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+                    },
+                    body: formBody
+                }).then(function(response) {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        return response.text().then(function(text) { throw new Error(text); });
+                    }
+                }).then(function(html) {
+                    document.body.innerHTML = html; // Replace the whole body on successful login
+                }).catch(function(error) {
+                    errorMessage.textContent = 'Login failed: ' + error.message; // Display error message
+                });
+            };
+        });
+    </script>
+</body>
+</html>
